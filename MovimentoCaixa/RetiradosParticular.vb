@@ -1,4 +1,4 @@
-Private Sub cmdRetirados_Click()
+Private Sub cmdRetiradosPart_Click()
 On Error GoTo Erro
     Dim RS As ADODB.Recordset
     Set RS = New ADODB.Recordset
@@ -19,14 +19,14 @@ On Error GoTo Erro
         End If
     RSMovCaixa.Close
 
-    Me.cmdRetirados.Enabled = False
+    Me.cmdRetiradosPart.Enabled = False
     Me.cmdProcessando.Visible = True
     Me.Refresh
 
     RS.Open "SELECT t.*, f.* " & _
             "FROM tblFinanceiro AS f " & _
             "LEFT JOIN tblTitulo AS t ON t.Protocolo_Cartorio = f.Protocolo " & _
-            "WHERE (t.Anulado = '0' AND t.CancelaBanco = '0'  AND t.Aguardando = '0' AND t.Tit_Particular = '0' " & _
+            "WHERE (t.Anulado = '0' AND t.CancelaBanco = '0'  AND t.Aguardando = '0' AND t.Tit_Particular = '1' " & _
             "AND t.Data_Retirada BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "') " & _
             "ORDER BY f.Protocolo", DB, adOpenDynamic
 
@@ -96,6 +96,5 @@ Erro:
     Me.txtCarregando.Visible = False
 
 End Sub
-
 
 
