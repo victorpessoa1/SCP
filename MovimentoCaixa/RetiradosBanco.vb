@@ -23,13 +23,21 @@ On Error GoTo Erro
     Me.cmdProcessando.Visible = True
     Me.Refresh
 
-    RS.Open "SELECT t.*, f.* " & _
+        '   RS.Open "SELECT t.*, f.* " & _
             "FROM tblFinanceiro AS f " & _
             "LEFT JOIN tblTitulo AS t ON t.Protocolo_Cartorio = f.Protocolo " & _
-            "WHERE (t.Anulado = '0' AND t.CancelaBanco = '0'  AND t.Aguardando = '0' AND t.Tit_Particular = '0' " & _
-            "AND t.Data_Retirada BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "') " & _
-            "ORDER BY f.Protocolo", DB, adOpenDynamic
+            "Where (t.Data_Pagamento BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "' AND f.Tipo_Ocorrencia = '1' AND t.CustasProtesto = '1' AND t.Anulado = '0' AND t.Aguardando = '0' AND t.CancelaBanco = '0' AND f.Data_Pagamento BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "' AND (f.Baixa_Lote = 0 OR f.Baixa_Lote IS NULL) AND f.custas <> 0) " & _
+            " OR (f.Rec_Data BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "' AND f.Tipo_Ocorrencia = '1' AND t.CustasProtesto = '1' AND t.CancelaBanco = '1' AND f.Rec_Canc = '1' AND f.Baixa_Lote = '1' AND f.custas <> 0) ", DB, adOpenDynamic
 
+RS.Open "SELECT t.*, f.* " & _
+        "FROM tblFinanceiro AS f " & _
+        "INNER JOIN tblTitulo AS t ON t.Protocolo_Cartorio = f.Protocolo " & _
+        "WHERE (Anulado = '0' AND Aguardando = '0' AND Tit_Particular = '0' AND (Baixa_lote = '0' OR Baixa_lote IS NULL) AND " & _
+        "t.Data_Retirada BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "' AND " & _
+        "f.Data_Retirada BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "') " & _
+        "OR (Anulado = '0' AND Aguardando = '0' AND Tit_Particular = '0' AND Baixa_lote = '1' AND f.Data_Retirada > 0 AND " & _
+        "f.Rec_data BETWEEN '" & Format(Me.txtDataInicio, "yyyy/mm/dd") & "' AND '" & Format(Me.txtDataFim, "yyyy/mm/dd") & "') AND f.Estorno IS NULL " & _
+        "ORDER BY f.Protocolo", DB, adOpenDynamic
 
     If RS.RecordCount = 0 Then
         Me.cmdProcessando.Visible = False
