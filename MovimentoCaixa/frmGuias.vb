@@ -1560,6 +1560,8 @@ Private Sub GridGuias_Click()
     Set RS = New ADODB.Recordset
     Dim RSFinan As ADODB.Recordset
     Set RSFinan = New ADODB.Recordset
+    Dim Cartao As String
+    
     
     x = Me.GridGuias.RowSel 'pega a linha do grid clikada
     y = Me.GridGuias.ColSel 'pega a coluna do grid clicada
@@ -1622,8 +1624,9 @@ Private Sub GridGuias_Click()
                         Pagar = Pagar + RS!Pagar
                 
                 RSFinan.Open "SELECT * FROM tblfinanceiro WHERE Protocolo = '" & RS!Protocolo & "'", DB, adOpenDynamic
+                    If RSFinan!Cartao = True Then Cartao = "C" Else Cartao = "D"
                 
-                Me.GridTitulos.AddItem RS("Protocolo") & vbTab & RS("Ocorrencia") & vbTab & RS("Devedor") & vbTab & RS("Tipo_Baixa") & vbTab & FormatCurrency(RS("Pagar"), 2) & vbTab & RS("Usuario") & vbTab & RS("N_Guia") & vbTab & Marca & vbTab & RS("DataEntrada") & vbTab & Baixado & RSFinan!Cartao
+                Me.GridTitulos.AddItem RS("Protocolo") & vbTab & RS("Ocorrencia") & vbTab & RS("Devedor") & vbTab & RS("Tipo_Baixa") & vbTab & FormatCurrency(RS("Pagar"), 2) & vbTab & RS("Usuario") & vbTab & RS("N_Guia") & vbTab & Marca & vbTab & RS("DataEntrada") & vbTab & Baixado & "  |  " & Cartao
                 Me.Refresh
                 RSFinan.Close
             RS.MoveNext
@@ -4619,3 +4622,5 @@ Public Sub CalculoFaixaProtesto(Aponta As ADODB.Recordset)
         If Valor <= Aponta!Faixa64 And Valor > Aponta!Faixa63 Then txtValorCustas = FormatCurrency(Aponta!Pago7264, 2): vPago = Aponta!sPago64: atoPago = 825: atoCanc = 958: vProt = Aponta!sProt64: atoProt = 891
         If Valor > Aponta!Faixa64 Then txtValorCustas = FormatCurrency(Aponta!Pago7265, 2): vPago = Aponta!sPago65: atoPago = 826: atoCanc = 959: vProt = Aponta!sProt65: atoProt = 892
 End Sub
+
+
